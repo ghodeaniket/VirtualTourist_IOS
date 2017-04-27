@@ -8,7 +8,11 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class MapPinsViewController: UIViewController {
-
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
 }
