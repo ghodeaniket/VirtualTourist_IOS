@@ -12,14 +12,20 @@ import CoreData
 
 class MapPinsViewController: UIViewController {
     
+    // MARK: IBOutlets
+    
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var deletionHint: UILabel!
     @IBOutlet weak var deletionHintBottomConstraint: NSLayoutConstraint!
+    
+    // MARK: Properties
     
     var stack: CoreDataStack {
         let delegate = UIApplication.shared.delegate as! AppDelegate
         return delegate.stack
     }
+    
+    // MARK: View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,6 +69,8 @@ class MapPinsViewController: UIViewController {
             self.view.layoutIfNeeded()
         }
     }
+    
+    // MARK: IBActions
     
     // Method invoked with long press gesture
     @IBAction func tappedOnMap(_ sender: UILongPressGestureRecognizer) {
