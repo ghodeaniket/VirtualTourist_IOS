@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16B2553a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="oZL-Cc-J15">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="DxQ-7o-2QH">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Virtual Tourist-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="MapPinsViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -23,32 +23,56 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="vwB-Re-sFo">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="523"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="b3C-4x-dGi"/>
+                                    <outletCollection property="gestureRecognizers" destination="MSD-SZ-POW" appends="YES" id="w2N-bF-heB"/>
+                                </connections>
                             </mapView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap Pins to delete" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0ue-7w-3YL">
+                                <rect key="frame" x="0.0" y="587" width="375" height="80"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="gI9-sI-Ogf"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="vwB-Re-sFo" secondAttribute="bottom" id="6Kn-PT-niZ"/>
-                            <constraint firstAttribute="trailing" secondItem="vwB-Re-sFo" secondAttribute="trailing" id="RpF-6i-9Gh"/>
-                            <constraint firstItem="vwB-Re-sFo" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="bma-ov-kdh"/>
-                            <constraint firstItem="vwB-Re-sFo" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="lNo-bi-ylp"/>
+                            <constraint firstItem="vwB-Re-sFo" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="8DE-4y-W1B"/>
+                            <constraint firstAttribute="trailing" secondItem="vwB-Re-sFo" secondAttribute="trailing" id="Ep2-Fl-tSf"/>
+                            <constraint firstItem="vwB-Re-sFo" firstAttribute="leading" secondItem="0ue-7w-3YL" secondAttribute="leading" id="KSD-Zk-mUE"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="0ue-7w-3YL" secondAttribute="bottom" id="dgK-M1-TWB"/>
+                            <constraint firstItem="vwB-Re-sFo" firstAttribute="trailing" secondItem="0ue-7w-3YL" secondAttribute="trailing" id="kd2-Oz-TPD"/>
+                            <constraint firstItem="0ue-7w-3YL" firstAttribute="top" secondItem="vwB-Re-sFo" secondAttribute="bottom" id="kmy-VL-dk1"/>
+                            <constraint firstItem="vwB-Re-sFo" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="oQp-SP-aE9"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="bLp-1C-2Ri">
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="XWJ-AM-pwN"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Virtual Tourist" id="bLp-1C-2Ri"/>
                     <connections>
+                        <outlet property="deletionHint" destination="0ue-7w-3YL" id="btI-ly-5x1"/>
+                        <outlet property="deletionHintBottomConstraint" destination="dgK-M1-TWB" id="0qC-9z-cJ7"/>
+                        <outlet property="mapView" destination="vwB-Re-sFo" id="R0R-CI-e5O"/>
                         <segue destination="oZL-Cc-J15" kind="show" identifier="ShowPhotoAlbum" id="oMI-tg-1wQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="MSD-SZ-POW">
+                    <connections>
+                        <action selector="tappedOnMap:" destination="BYZ-38-t0r" id="KJZ-YK-YG3"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="853.60000000000002" y="-561.76911544227892"/>
         </scene>
-        <!--View Controller-->
+        <!--Photo Album View Controller-->
         <scene sceneID="dxy-aA-nxC">
             <objects>
-                <viewController id="oZL-Cc-J15" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="photosViewController" id="oZL-Cc-J15" customClass="PhotoAlbumViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Eqm-YO-zCC"/>
                         <viewControllerLayoutGuide type="bottom" id="zfP-jw-pPO"/>
