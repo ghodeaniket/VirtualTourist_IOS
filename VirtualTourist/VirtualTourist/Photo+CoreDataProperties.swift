@@ -2,7 +2,7 @@
 //  Photo+CoreDataProperties.swift
 //  VirtualTourist
 //
-//  Created by Aniket Ghode on 30/04/17.
+//  Created by Aniket Ghode on 01/05/17.
 //  Copyright © 2017 Aniket Ghode. All rights reserved.
 //
 
@@ -17,7 +17,7 @@ extension Photo {
     }
 
     @NSManaged public var imageData: NSData?
-    @NSManaged public var name: String?
+    @NSManaged public var imageUrl: String?
     @NSManaged public var pin: Pin?
 
 }

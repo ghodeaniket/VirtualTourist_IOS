@@ -14,6 +14,18 @@ class FlickrClient: NSObject {
     // shared session
     var session = URLSession.shared
     
+    // Number of photos per pin
+    let photosPerPage = 21
+    private let maxFlickrResults = 4000
+    
+    // Upper Limit of Pages
+    private var maxFlickrPages: Int { return maxFlickrResults / photosPerPage }
+    
+    var stack: CoreDataStack {
+        let delegate = UIApplication.shared.delegate as! AppDelegate
+        return delegate.stack
+    }
+    
     // MARK: Initializers
     
     override init() {
@@ -22,24 +34,18 @@ class FlickrClient: NSObject {
     
     // MARK: GET
     
-    func taskForGETMethod(_ method: String, parameters: [String:AnyObject], completionHandlerForGET: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
+    func taskForGETMethod(parameters: [String:AnyObject], completionHandlerForGET: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
+
+        var parametersWithKeys = parameters
         
         /* 1. Set the parameters */
-        let methodParameters = [
-            ParameterKeys.Method: FlickrParameterValues.SearchMethod,
-            ParameterKeys.APIKey: FlickrParameterValues.APIKey,
-            ParameterKeys.BoundingBox: bboxString(0.0,0.0),
-            ParameterKeys.SafeSearch: FlickrParameterValues.UseSafeSearch,
-            ParameterKeys.Extras: FlickrParameterValues.MediumURL,
-            ParameterKeys.Format: FlickrParameterValues.ResponseFormat,
-            ParameterKeys.NoJSONCallback: FlickrParameterValues.DisableJSONCallback
-        ]
+        parametersWithKeys[ParameterKeys.APIKey] = FlickrParameterValues.APIKey as AnyObject
         
         /* 2/3. Build the URL, Configure the request */
-        let request = NSMutableURLRequest(url: flickrURLFromParameters(methodParameters as [String : AnyObject]))
+        let request = URLRequest(url: flickrURLFromParameters(parametersWithKeys as [String : AnyObject]))
         
         /* 4. Make the request */
-        let task = session.dataTask(with: request as URLRequest) { (data, response, error) in
+        let task = session.dataTask(with: request) { (data, response, error) in
             
             func sendError(_ error: String) {
                 print(error)
@@ -93,15 +99,7 @@ class FlickrClient: NSObject {
         
         return components.url!
     }
-    
-    private func bboxString(_ latitude: Double, _ longitude: Double) -> String {
-        // ensure bbox is bounded by minimum and maximums
-        let minimumLon = max(longitude - Flickr.SearchBBoxHalfWidth, Flickr.SearchLonRange.0)
-        let minimumLat = max(latitude - Flickr.SearchBBoxHalfHeight, Flickr.SearchLatRange.0)
-        let maximumLon = min(longitude + Flickr.SearchBBoxHalfWidth, Flickr.SearchLonRange.1)
-        let maximumLat = min(latitude + Flickr.SearchBBoxHalfHeight, Flickr.SearchLatRange.1)
-        return "\(minimumLon),\(minimumLat),\(maximumLon),\(maximumLat)"
-    }
+
     
     // given raw JSON, return a usable Flickr Photo array object
     private func convertDataWithCompletionHandler(_ data: Data, completionHandlerForConvertData: (_ result: AnyObject?, _ error: NSError?) -> Void) {
@@ -116,6 +114,21 @@ class FlickrClient: NSObject {
         
         completionHandlerForConvertData(parsedResult, nil)
     }
+    
+    // Get a random page inside flickr results
+    func getRandomPage(_ totalPages: Int) -> Int {
+        // If there is more than one page, ignore the last page
+        // the last page may contain less then 'photosPerPage' Images
+        var pages = totalPages
+        if totalPages > 1 {
+            pages = totalPages - 1
+        }
+        // Limit Pages to match upper limit of flickr results
+        let maxPage = min(pages, maxFlickrPages)
+        let randomPage = Int(arc4random_uniform(UInt32(maxPage))) + 1
+        return randomPage
+    }
+   
     
     // MARK: Shared Instance
     
