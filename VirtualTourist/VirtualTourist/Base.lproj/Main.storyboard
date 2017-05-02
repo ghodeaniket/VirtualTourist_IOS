@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="DxQ-7o-2QH">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16B2553a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="DxQ-7o-2QH">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -86,7 +87,6 @@
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="k23-Ee-Js5">
                                 <rect key="frame" x="0.0" y="264" width="375" height="343"/>
-                                <color key="backgroundColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="vNL-Oq-oDO">
                                     <size key="itemSize" width="86" height="83"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -101,18 +101,26 @@
                                             <rect key="frame" x="0.0" y="0.0" width="86" height="83"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fhj-jh-wHg">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fhj-jh-wHg">
                                                     <rect key="frame" x="0.0" y="0.0" width="86" height="83"/>
                                                 </imageView>
+                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="wC7-r2-LaY">
+                                                    <rect key="frame" x="8" y="8" width="70" height="67"/>
+                                                </activityIndicatorView>
                                             </subviews>
                                         </view>
                                         <constraints>
+                                            <constraint firstItem="wC7-r2-LaY" firstAttribute="top" secondItem="xQx-aS-NO2" secondAttribute="topMargin" id="431-EK-vGN"/>
                                             <constraint firstAttribute="trailing" secondItem="fhj-jh-wHg" secondAttribute="trailing" id="Iyc-jY-8Nx"/>
                                             <constraint firstAttribute="bottom" secondItem="fhj-jh-wHg" secondAttribute="bottom" id="Lqj-Eq-yTe"/>
                                             <constraint firstItem="fhj-jh-wHg" firstAttribute="top" secondItem="xQx-aS-NO2" secondAttribute="top" id="QQs-NU-4IE"/>
                                             <constraint firstItem="fhj-jh-wHg" firstAttribute="leading" secondItem="xQx-aS-NO2" secondAttribute="leading" id="TXE-sl-LsK"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="wC7-r2-LaY" secondAttribute="bottom" id="Vbe-xB-vcU"/>
+                                            <constraint firstItem="wC7-r2-LaY" firstAttribute="leading" secondItem="xQx-aS-NO2" secondAttribute="leadingMargin" id="WHn-yn-SYi"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="wC7-r2-LaY" secondAttribute="trailing" id="sVZ-cN-eq9"/>
                                         </constraints>
                                         <connections>
+                                            <outlet property="activityIndicatorView" destination="wC7-r2-LaY" id="auN-1d-rM0"/>
                                             <outlet property="photoImageView" destination="fhj-jh-wHg" id="tqX-cs-JXI"/>
                                         </connections>
                                     </collectionViewCell>
@@ -128,9 +136,12 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="G73-V8-lgR"/>
                                 </constraints>
-                                <state key="normal" title="Button"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="24"/>
+                                <state key="normal" title="Button">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
                                 <connections>
-                                    <action selector="removePhotosFromCollection:" destination="oZL-Cc-J15" eventType="touchUpInside" id="U7p-zt-OlE"/>
+                                    <action selector="toolBarButtonPressed:" destination="oZL-Cc-J15" eventType="touchUpInside" id="o2f-wc-PA0"/>
                                 </connections>
                             </button>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Images found!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Raq-ti-0ks">

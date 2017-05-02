@@ -61,32 +61,47 @@ extension FlickrClient {
             
             guard let photosDictionary = results?[JSONResponseKeys.Photos] as? [String: AnyObject],
                 let photosArray = photosDictionary[JSONResponseKeys.Photo] as? [[String: AnyObject]] else {
+                completionHandler(false, false, "Unknown error, Flickr API")
                 return
             }
             
             // Images found for location?
             if photosArray.count == 0 {
-//                completionHandler(.noImagesFound)
+                completionHandler(true, true, nil)
                 return
             } else {
-                
                 self.stack.performBackgroundBatchOperation { (workerContext) in
                     // Create photo objects for each image in the flickr result
                     // Save the image url and link the photos to the pin
                     for photoDictionary in photosArray {
                         guard let imageURLString = photoDictionary[JSONResponseKeys.MediumURL] as? String else {
-//                            completionHandler(.failure)
+                            completionHandler(false, false, "Unknown error, Flickr API")
                             return
                         }
                         let photo = Photo(imageData: nil, imageUrl: imageURLString, context: workerContext)
                         photo.pin = pin
                     }
-//                    completionHandler(.success)
                 }
+                completionHandler(true, false, nil)
             }
 
         })
         
+    }
+    
+    func getFlickrImage(for url: String, completionHandler: @escaping (_ success: Bool, _ image: UIImage?, _ errorString: String?) -> Void){
+        _ = taskForDownloadImage(url, competionHandler: { (data, error) in
+            if let error = error {
+                print(error)
+                completionHandler(false, nil, "Error downloading image.")
+                return
+            } else {
+                let imageData = NSData(data: data!) as Data
+                let image : UIImage = UIImage(data: imageData)!
+                print("taskForDownloadImage is invoked")
+                completionHandler(true, image, nil)
+            }
+        })
     }
     
     private func bboxString(_ latitude: Double, _ longitude: Double) -> String {

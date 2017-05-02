@@ -32,6 +32,18 @@ class PhotoAlbumViewController: UIViewController {
         return delegate.stack
     }
     
+    // Edit Mode to delete selected pins
+    // or renew entire collection
+    var editMode: Bool! {
+        didSet {
+            if editMode! {
+                newCollectionButton.setTitle("Remove Selected Pictures", for: .normal)
+            } else {
+                newCollectionButton.setTitle("New Collection", for: .normal)
+            }
+        }
+    }
+    
     var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>? {
         didSet {
             // Whenever the frc changes, we execute the search and
@@ -52,8 +64,6 @@ class PhotoAlbumViewController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,12 +78,24 @@ class PhotoAlbumViewController: UIViewController {
         
         fetchRequest.predicate = pred
         
+        // set edit mode to false until any image is selected
+        editMode = false
         // Create the FetchedResultsController
+
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
         
+        
+    }
+    
+    func searchFlickrImages() {
+        print("core data has no photos")
+        
+        // disable new collection button
+        newCollectionButton.isEnabled = false
+        
         FlickrClient.sharedInstance().getFlickerPages(for: pin) { (success, noImageFound, errorString) in
-            if success {
-                self.collectionView.reloadData()
+            if noImageFound {
+                self.noImagesFoundLabel.isHidden = false
             }
         }
     }
@@ -84,10 +106,21 @@ class PhotoAlbumViewController: UIViewController {
         // Create custom Flow Layout
         let space: CGFloat = 3.0
         let wDimension = (view.frame.size.width - (2*space)) / 3.0
-        let hDimension = (view.frame.size.height - (2*space)) / 3.0
         flowLayout.minimumInteritemSpacing = space
         flowLayout.minimumLineSpacing = space
+        
+        // use same size for height and width
         flowLayout.itemSize = CGSize(width: wDimension, height: wDimension)
+        
+        // check if coredata has photos
+        if pin.photos!.count > 0 {
+            // no need to fetch fresh new photos
+            print("photos from core data \(pin.photos!.count)")
+        }
+        else {
+            // else fetch it from flickr
+            searchFlickrImages()
+        }
     }
     
     func centerMapOnLocation(locationPin: Pin) {
@@ -104,8 +137,50 @@ class PhotoAlbumViewController: UIViewController {
         mapView.addAnnotation(annotation)
         
     }
-    @IBAction func removePhotosFromCollection(_ sender: Any) {
+
+    @IBAction func toolBarButtonPressed(_ sender: Any) {
+        if editMode {
+            // remove photos
+            
+            if let context = fetchedResultsController?.managedObjectContext, selectedIndexes.count > 0 {
+                
+                for indexPath in selectedIndexes {
+                    
+                    let selectedPhoto = fetchedResultsController!.object(at: indexPath) as! Photo
+                    context.delete(selectedPhoto)
+                    
+                }
+                
+                do {
+                    try context.save()
+                } catch {
+                    print("error saving context.")
+                }
+                
+                newCollectionButton.setTitle("New Collection", for: .normal)
+                selectedIndexes = [IndexPath]()
+            }
+        } else {
+            newCollectionButton.isEnabled = false
+            if let context = fetchedResultsController?.managedObjectContext {
+                //delete all images in core data
+                for photo in fetchedResultsController!.fetchedObjects as! [Photo] {
+                    context.delete(photo)
+                }
+                do{
+                    try context.save()
+                } catch {
+                    print("error saving context.")
+                }
+            }
+            
+            // save context
+            
+            // load new photos
+            searchFlickrImages()            
+        }
     }
+    
 }
 
 extension PhotoAlbumViewController: UICollectionViewDataSource {
@@ -127,9 +202,61 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
         
         let photo = fetchedResultsController?.object(at: indexPath) as! Photo
         cell.photoImageView.image = #imageLiteral(resourceName: "placeholder")
+        cell.activityIndicatorView.startAnimating()
+        
         print(photo.imageUrl!)
+        
+        if let imageData = photo.imageData {
+            cell.photoImageView.image = UIImage(data: imageData as Data)
+            newCollectionButton.isEnabled = true
+        } else {
+            if let imageUrl = photo.imageUrl {
+                FlickrClient.sharedInstance().getFlickrImage(for: imageUrl, completionHandler: { (success, image, errorString) in
+                    if success {
+                        DispatchQueue.main.async {
+                            
+                            cell.photoImageView.image = image
+                            cell.activityIndicatorView.stopAnimating()
+                            cell.activityIndicatorView.isHidden = true
+                            
+                            // as soon as first photo is downloaded enable the new collection button
+                            self.newCollectionButton.isEnabled = true
+                        }
+                    }
+                })
+            }
+        }
+        
+        // check if the cell is selected and changed the transperency accordingly.
+        
+        if let _ = selectedIndexes.index(of: indexPath) {
+            cell.alpha = 0.5
+        } else {
+            cell.alpha = 1
+        }
+        
         return cell
     }
+}
+
+extension PhotoAlbumViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let cell = collectionView.cellForItem(at: indexPath) as! PhotoCollectionViewCell
+        
+        if let index = selectedIndexes.index(of: indexPath) {
+            selectedIndexes.remove(at: index)
+            cell.alpha = 1.0
+        } else {
+            selectedIndexes.append(indexPath)
+            cell.alpha = 0.5
+        }
+        
+        //Change UI
+        editMode = selectedIndexes.count > 0 ? true : false
+        
+    }
+    
 }
 
 // MARK: - PhotoAlbumViewController (Fetches)

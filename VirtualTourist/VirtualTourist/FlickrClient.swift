@@ -80,6 +80,28 @@ class FlickrClient: NSObject {
         
         return task
     }
+    
+    // task to download image from Url
+    
+    func taskForDownloadImage(_ urlString: String, competionHandler: @escaping (_ data: Data?, _ error: Error?) -> Void) -> URLSessionDataTask {
+        
+        let url = URL(string: urlString)
+        let request = URLRequest(url: url!)
+        
+        let task = session.dataTask(with: request, completionHandler: {data, response, downloadError in
+            
+            if let error = downloadError {                
+                competionHandler(nil, error)
+            } else {
+                competionHandler(data, nil)
+            }
+        })
+        
+        task.resume()
+        
+        return task
+        
+    }
 
     
     // MARK: Helper for Creating a URL from Parameters

@@ -135,9 +135,9 @@
 		25B2D5761EB0AA09002D0AC4 /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
+				25B2D5771EB0AA09002D0AC4 /* AppDelegate.swift */,
 				25B2D5B21EB0AF0A002D0AC4 /* View */,
 				25B2D5AE1EB0AE93002D0AC4 /* Model */,
-				25B2D5771EB0AA09002D0AC4 /* AppDelegate.swift */,
 				25B2D5A91EB0ADFF002D0AC4 /* Controllers */,
 				25B2D5A81EB0ADF3002D0AC4 /* Assets */,
 				25B2D5831EB0AA09002D0AC4 /* Info.plist */,
@@ -184,6 +184,7 @@
 		25B2D5A91EB0ADFF002D0AC4 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				25983B8D1EB659B800D8A513 /* PhotoCollectionViewCell.swift */,
 				25B2D5AA1EB0AE2F002D0AC4 /* MapPinsViewController.swift */,
 				25B2D5AC1EB0AE47002D0AC4 /* PhotoAlbumViewController.swift */,
 			);
@@ -204,7 +205,6 @@
 			children = (
 				25983B8A1EB623C600D8A513 /* Extension */,
 				25B2D5B31EB0AF3A002D0AC4 /* ActivityIndicator.swift */,
-				25983B8D1EB659B800D8A513 /* PhotoCollectionViewCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -308,6 +308,7 @@
 				TargetAttributes = {
 					25B2D5731EB0AA09002D0AC4 = {
 						CreatedOnToolsVersion = 8.3.2;
+						DevelopmentTeam = 7M848FL347;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
@@ -545,6 +546,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 7M848FL347;
 				INFOPLIST_FILE = VirtualTourist/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.aghode.VirtualTourist;
@@ -557,6 +559,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 7M848FL347;
 				INFOPLIST_FILE = VirtualTourist/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.aghode.VirtualTourist;

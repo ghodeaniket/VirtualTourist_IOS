@@ -12,9 +12,6 @@ extension FlickrClient {
     // MARK: Constants
     struct Constants {
         
-        // MARK: API Key
-        static let ApiKey = "YOUR_API_KEY_HERE"
-        
         // MARK: URLs
         static let APIScheme = "https"
         static let APIHost = "api.flickr.com"
@@ -28,33 +25,6 @@ extension FlickrClient {
         static let SearchBBoxHalfHeight = 1.0
         static let SearchLatRange = (-90.0, 90.0)
         static let SearchLonRange = (-180.0, 180.0)
-    }
-    
-    // MARK: Methods
-    struct Methods {
-        
-        // MARK: Account
-        static let Account = "/account"
-        static let AccountIDFavoriteMovies = "/account/{id}/favorite/movies"
-        static let AccountIDFavorite = "/account/{id}/favorite"
-        static let AccountIDWatchlistMovies = "/account/{id}/watchlist/movies"
-        static let AccountIDWatchlist = "/account/{id}/watchlist"
-        
-        // MARK: Authentication
-        static let AuthenticationTokenNew = "/authentication/token/new"
-        static let AuthenticationSessionNew = "/authentication/session/new"
-        
-        // MARK: Search
-        static let SearchMovie = "/search/movie"
-        
-        // MARK: Config
-        static let Config = "/configuration"
-        
-    }
-    
-    // MARK: URL Keys
-    struct URLKeys {
-        static let UserID = "id"
     }
     
     // MARK: Parameter Keys

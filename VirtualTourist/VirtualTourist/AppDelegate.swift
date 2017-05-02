@@ -15,9 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let stack = CoreDataStack(modelName: "VirtualTourist")!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // try to save after every 60 seconds
-        try? stack.dropAllData()
-        stack.autoSave(60)
+        // try to save after every 30 seconds
+
+        stack.autoSave(30)
         return true
     }
 

@@ -64,8 +64,4 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 
-VirtualTourist/.DS_Store
-
-VirtualTourist/VirtualTourist/.DS_Store
-
-VirtualTourist/VirtualTourist/.DS_Store
+.DS_Store
