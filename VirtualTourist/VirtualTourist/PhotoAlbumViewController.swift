@@ -211,14 +211,15 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
             newCollectionButton.isEnabled = true
         } else {
             if let imageUrl = photo.imageUrl {
-                FlickrClient.sharedInstance().getFlickrImage(for: imageUrl, completionHandler: { (success, image, errorString) in
+                FlickrClient.sharedInstance().getFlickrImage(for: imageUrl, completionHandler: { (success, imageData, errorString) in
                     if success {
                         DispatchQueue.main.async {
                             
-                            cell.photoImageView.image = image
+                            cell.photoImageView.image = UIImage(data: imageData!)
                             cell.activityIndicatorView.stopAnimating()
                             cell.activityIndicatorView.isHidden = true
                             
+                            photo.imageData = imageData! as NSData
                             // as soon as first photo is downloaded enable the new collection button
                             self.newCollectionButton.isEnabled = true
                         }
@@ -322,37 +323,6 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
             print("Moving an item.")
             break
         }
-    }
-    
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        self.collectionView.performBatchUpdates({() -> Void in
-            
-            for indexPath in self.insertedIndexPaths {
-                print("insertItem in controllerDidChangeContent")
-                self.collectionView.insertItems(at: [indexPath])
-            }
-            
-            for indexPath in self.deletedIndexPaths {
-                print("deleteItem in controllerDidChangeContent")
-                self.collectionView.deleteItems(at: [indexPath])
-            }
-            
-            for indexPath in self.updatedIndexPaths {
-                self.collectionView.reloadItems(at: [indexPath])
-            }
-            
-        }, completion: { (success) -> Void in
-            
-            if (success) {
-                print("success")
-                self.insertedIndexPaths = [IndexPath]()
-                self.deletedIndexPaths = [IndexPath]()
-                self.updatedIndexPaths = [IndexPath]()
-                
-            }
-            
-        })
-
     }
 
 }

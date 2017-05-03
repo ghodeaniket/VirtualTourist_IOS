@@ -89,7 +89,7 @@ extension FlickrClient {
         
     }
     
-    func getFlickrImage(for url: String, completionHandler: @escaping (_ success: Bool, _ image: UIImage?, _ errorString: String?) -> Void){
+    func getFlickrImage(for url: String, completionHandler: @escaping (_ success: Bool, _ imageData: Data?, _ errorString: String?) -> Void){
         _ = taskForDownloadImage(url, competionHandler: { (data, error) in
             if let error = error {
                 print(error)
@@ -97,9 +97,8 @@ extension FlickrClient {
                 return
             } else {
                 let imageData = NSData(data: data!) as Data
-                let image : UIImage = UIImage(data: imageData)!
                 print("taskForDownloadImage is invoked")
-                completionHandler(true, image, nil)
+                completionHandler(true, imageData, nil)
             }
         })
     }
