@@ -136,11 +136,11 @@ extension MapPinsViewController: MKMapViewDelegate {
         
         fetchRequest.predicate = fetchPredicate
         
-        if let pins = try? stack.backgroundContext.fetch(fetchRequest) as! [NSManagedObject] {
+        if let pins = try? stack.context.fetch(fetchRequest) as! [NSManagedObject] {
             if let pin = pins.first {
                 if isEditing {
                     // Delete pin from map and core data if in edit mode
-                    stack.performBackgroundBatchOperation { $0.delete(pin) }
+                    stack.context.delete(pin)
                     mapView.removeAnnotation(annotation)
                 } else {
                     

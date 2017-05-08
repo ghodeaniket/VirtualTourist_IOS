@@ -13,11 +13,11 @@ extension FlickrClient {
     
     
     
-    func getFlickerPages(for pin: Pin, completionHandler: @escaping (_ success: Bool, _ imageNotFound: Bool, _ errorString: String?) -> Void) {
+    func getFlickerPages(forLocation latitude: Double, longitude: Double, completionHandler: @escaping (_ success: Bool, _ imageNotFound: Bool, _ errorString: String?) -> Void) {
         
         let methodParameters = [
             ParameterKeys.Method: FlickrParameterValues.SearchMethod,
-            ParameterKeys.BoundingBox: bboxString(pin.latitude, pin.longitude),
+            ParameterKeys.BoundingBox: bboxString(latitude, longitude),
             ParameterKeys.SafeSearch: FlickrParameterValues.UseSafeSearch,
             ParameterKeys.Extras: FlickrParameterValues.MediumURL,
             ParameterKeys.Format: FlickrParameterValues.ResponseFormat,
@@ -39,7 +39,8 @@ extension FlickrClient {
             }
             
             if totalPages > 0 {
-                self.getFlickrUrls(for: pin, with: self.getRandomPage(totalPages), methodParameters: methodParameters as [String : AnyObject], completionHandler: completionHandler)
+                self.getFlickrUrls(forLocation: latitude, longitude: longitude, with: self.getRandomPage(totalPages), methodParameters: methodParameters as [String : AnyObject], completionHandler: completionHandler)
+                
             } else {
                 completionHandler(false, true, "No Image found at current location")
             }
@@ -47,7 +48,7 @@ extension FlickrClient {
         })
     }
     
-    func getFlickrUrls(for pin: Pin,with pageNumber: Int, methodParameters: [String: AnyObject], completionHandler: @escaping (_ success: Bool, _ imageNotFound: Bool, _ errorString: String?) -> Void) {
+    func getFlickrUrls(forLocation latitude: Double, longitude: Double, with pageNumber: Int, methodParameters: [String: AnyObject], completionHandler: @escaping (_ success: Bool, _ imageNotFound: Bool, _ errorString: String?) -> Void) {
         
         var parametersWithPageNumber = methodParameters
         parametersWithPageNumber[ParameterKeys.Page] = String(pageNumber) as AnyObject
@@ -71,15 +72,30 @@ extension FlickrClient {
                 return
             } else {
                 self.stack.performBackgroundBatchOperation { (workerContext) in
-                    // Create photo objects for each image in the flickr result
-                    // Save the image url and link the photos to the pin
-                    for photoDictionary in photosArray {
-                        guard let imageURLString = photoDictionary[JSONResponseKeys.MediumURL] as? String else {
-                            completionHandler(false, false, "Unknown error, Flickr API")
-                            return
+                    
+                    
+                    let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
+                    
+                    let predicate = NSPredicate(format: "latitude = %@ && longitude = %@", argumentArray: [latitude, longitude])
+                    fetchRequest.predicate = predicate
+                    
+                    // Get the Pin object in background context to form relationship between Photo and Pin objects
+                    
+                    if let pins = try? workerContext.fetch(fetchRequest) as! [Pin] {
+                        if let pin = pins.first {
+                            for photoDictionary in photosArray {
+                                
+                                // Create photo objects for each image in the flickr result
+                                // Save the image url and link the photos to the pin
+                                
+                                guard let imageURLString = photoDictionary[JSONResponseKeys.MediumURL] as? String else {
+                                    completionHandler(false, false, "Unknown error, Flickr API")
+                                    return
+                                }
+                                let photo = Photo(imageData: nil, imageUrl: imageURLString, context: workerContext)
+                                photo.pin = pin
+                            }
                         }
-                        let photo = Photo(imageData: nil, imageUrl: imageURLString, context: workerContext)
-                        photo.pin = pin
                     }
                 }
                 completionHandler(true, false, nil)

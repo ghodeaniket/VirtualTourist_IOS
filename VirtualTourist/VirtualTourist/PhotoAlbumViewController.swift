@@ -92,8 +92,8 @@ class PhotoAlbumViewController: UIViewController {
         
         // disable new collection button
         newCollectionButton.isEnabled = false
-        
-        FlickrClient.sharedInstance().getFlickerPages(for: pin) { (success, noImageFound, errorString) in
+
+        FlickrClient.sharedInstance().getFlickerPages(forLocation: pin.latitude, longitude: pin.longitude) { (success, noImageFound, errorString) in
             if noImageFound {
                 self.noImagesFoundLabel.isHidden = false
             }
