@@ -144,19 +144,10 @@ class PhotoAlbumViewController: UIViewController {
             
             if let context = fetchedResultsController?.managedObjectContext, selectedIndexes.count > 0 {
                 
-                for indexPath in selectedIndexes {
-                    
+                for indexPath in selectedIndexes {                    
                     let selectedPhoto = fetchedResultsController!.object(at: indexPath) as! Photo
                     context.delete(selectedPhoto)
-                    
                 }
-                
-                do {
-                    try context.save()
-                } catch {
-                    print("error saving context.")
-                }
-                
                 newCollectionButton.setTitle("New Collection", for: .normal)
                 selectedIndexes = [IndexPath]()
             }
@@ -170,11 +161,13 @@ class PhotoAlbumViewController: UIViewController {
                 self.stack.save()
             }
             
-            // save context
-            
             // load new photos
             searchFlickrImages()            
         }
+        
+        // Save Context to save changes to coredata
+        
+        self.stack.save()
     }
     
 }
