@@ -141,6 +141,7 @@ extension MapPinsViewController: MKMapViewDelegate {
                 if isEditing {
                     // Delete pin from map and core data if in edit mode
                     stack.context.delete(pin)
+                    stack.save()
                     mapView.removeAnnotation(annotation)
                 } else {
                     
