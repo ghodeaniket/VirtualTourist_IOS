@@ -167,11 +167,7 @@ class PhotoAlbumViewController: UIViewController {
                 for photo in fetchedResultsController!.fetchedObjects as! [Photo] {
                     context.delete(photo)
                 }
-                do{
-                    try context.save()
-                } catch {
-                    print("error saving context.")
-                }
+                self.stack.save()
             }
             
             // save context
