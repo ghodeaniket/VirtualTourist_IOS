@@ -58,7 +58,7 @@ class PhotoAlbumViewController: UIViewController {
     
     
     
-    // Do not worry about this initializer. I has to be implemented
+    // Do not worry about this initializer. It has to be implemented
     // because of the way Swift interfaces with an Objective C
     // protocol called NSArchiving. It's not relevant.
     required init?(coder aDecoder: NSCoder) {
@@ -220,6 +220,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
                             cell.activityIndicatorView.isHidden = true
                             
                             photo.imageData = imageData! as NSData
+                            self.stack.save()
                             // as soon as first photo is downloaded enable the new collection button
                             self.newCollectionButton.isEnabled = true
                         }
@@ -324,5 +325,31 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
             break
         }
     }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        self.collectionView.performBatchUpdates({() -> Void in
+            
+            for indexPath in self.insertedIndexPaths {
+                print("insertItem in controllerDidChangeContent")
+                self.collectionView.insertItems(at: [indexPath])
+            }
+            
+            for indexPath in self.deletedIndexPaths {
+                print("deleteItem in controllerDidChangeContent")
+                self.collectionView.deleteItems(at: [indexPath])
+            }
+            
+        }, completion: { (success) -> Void in
+            
+            if (success) {
+                print("success")
+                self.insertedIndexPaths = [IndexPath]()
+                self.deletedIndexPaths = [IndexPath]()       
+            }
+            
+        })
+        
+    }
+
 
 }
